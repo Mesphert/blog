@@ -9,6 +9,8 @@ export async function POST(reqs, res){
   const inputDate = await request.postData.scheduleDate;
   const formattedDate = inputDate.replace('T', ' ').replace(/\..+/, '') + ':00';
 
+  console.log('Publishing Post');  
+
   const post = {
     title: request.postData.title,
     content: request.postData.content.replace(/\\/g, ''),
@@ -33,10 +35,11 @@ export async function POST(reqs, res){
     
     const response = await fetch(postUrl, requestOptions);
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
+    console.log(`Post Published At: ${formattedDate}`);  
     return new Response(JSON.stringify({id: data.id}));
   } catch (error) {
-    console.error('Error creating post:', error);
+    console.error('Error Publishing post:', error);
   }
 
 }

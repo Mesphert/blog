@@ -1,7 +1,7 @@
 'use server';
 // Implement the actual WordPress post scheduling API call here
 const wpCreatePost = async (postData) => {
-  console.log('Scheduling post on WordPress:', postData);
+
   try{
     const response = await fetch('http://localhost:3000/api/wordpress/posts/create',{
       method: 'POST',

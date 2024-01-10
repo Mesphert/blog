@@ -12,7 +12,7 @@ const gptGenerateContent = async (prompt, facts) => {
       cache: 'no-store',
     });
 
-    console.log(response);
+    // console.log(response);
     const data = await response.json();
     return{text: data.text};
   }

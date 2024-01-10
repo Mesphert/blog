@@ -8,7 +8,7 @@ const gptGenerateImage = async (prompt) => {
       body: JSON.stringify({prompt: prompt}),
       cache: 'no-store',
     });
-    const data = await response.json();
+    const data = await response.text();
     console.log(data);
 
     if(!data.ok){

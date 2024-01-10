@@ -7,6 +7,7 @@ const openai = new OpenAI({
 export async function POST(reqs, res) {
 
   const request = await reqs.json();
+    console.log('Generating Content');
 
   try {
     const completion = await openai.chat.completions.create({
@@ -19,7 +20,8 @@ export async function POST(reqs, res) {
     // if (!data.ok) {
     //   throw new Error(`HTTP error! Status: ${data.status}`);
     // }
-    console.log(modifiedData);
+    // console.log(modifiedData);
+    console.log('Content Generated');  
     return new Response(JSON.stringify({ text: modifiedData }));  
   } catch (error) {
     console.error('Error fetching posts:', error);

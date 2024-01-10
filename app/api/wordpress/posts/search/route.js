@@ -3,7 +3,9 @@
 export async function POST(reqs, res) {
 
   const apiUrl = 'https://mesphert.com/wp-json/wp/v2';
-  const request = await reqs.json()
+  const request = await reqs.json();
+
+  console.log('Fetching Related Posts');  
 
   try {
     const response = await fetch(`${apiUrl}/posts?search=${encodeURIComponent(request.query)}&per_page=${request.limit}`, {cache: 'no-store'});
@@ -13,7 +15,7 @@ export async function POST(reqs, res) {
     }
 
     const data = await response.json();
-    // console.log(data);
+    console.log('Related Posts Fetched');  
     return new Response(JSON.stringify(data));  
   } catch (error) {
     console.error('Error fetching posts:', error);

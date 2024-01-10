@@ -2,9 +2,7 @@
 // Load blog data from a JSON file (replace with your actual file path)
 import blogData from './blogData.json';
 import React, { useState } from 'react';
-import OpenAI from "openai";
-import downloadImage from './dl-img';
-import uploadImageToWordPress from './wp_upload';
+import wpUploadImage from '@utils/wpUploadImage';
 import ContentLoading from './content-loading';
 import ImageLoading from './image-loading';
 import generatePostList from '@utils/generatePostList';
@@ -75,6 +73,11 @@ const App = () => {
         setSelectedBlog(blog);
     };
 
+    const handleTimeChange = async (event) =>{
+      setScheduleDate(event.target.value);
+      console.log(scheduleDate);
+    }
+
     // Handle generate button click
     const handleGenerateClick = async () => {
         setContLoading(true);
@@ -96,17 +99,17 @@ const App = () => {
             // Upload image to WordPress (replace with actual WordPress API call)
             console.log('Uploading Image');
             imageData? setStep(2): console.log('gptImageStatus is FALSE');
-            const imageUploadResponse = await uploadImageToWordPress(imageData, selectedBlog.title);
+            const imageUploadResponse = await wpUploadImage(imageData, selectedBlog.title);
             (imageUploadResponse?.id)? setWpImageStatus({...wpImageStatus, status: true}): setWpImageStatus({...wpImageStatus, status: false});
 
             // Generate content using ChatGPT API
             console.log('Generating Content');
-            wpImageStatus? setStep(3): null;
+            wpImageStatus.status? setStep(3): null;
             const contentPrompt = promptTemplate(selectedBlog, 'default');
             const generatedContentResponse = await gptGenerateContent(contentPrompt, facts);
             let generatedContentText = generatedContentResponse.text;
             generatedContentResponse?.text? setGptContentStatus({...gptContentStatus, status: true}): setGptContentStatus({...gptContentStatus, status: false});
-            generatedContentText = await addImageForTopics(generatedContentText, selectedBlog.title);
+            // generatedContentText = await addImageForTopics(generatedContentText, selectedBlog.title);
             const internalLinks = await generatePostList(relatedKeyword);
             const ytIframe = await ytEmbedIframe(selectedBlog.title);
 
@@ -115,7 +118,7 @@ const App = () => {
             setGeneratedContent(generatedContentText);
 
             // Schedule post on WordPress with generated content and uploaded image
-            gptContentStatus? setStep(4): null;
+            gptContentStatus.status? setStep(4): null;
             const schedulePostResponse = await wpCreatePost({
                 title: selectedBlog.title,
                 content: generatedContentText,
@@ -154,7 +157,7 @@ const App = () => {
           {/* Date and time input */}
           <label className="text-lg font-sans mt-4 text-gray-light" htmlFor="scheduleDate">Schedule Date and Time</label>
           <input className="block w-full rounded-md border-0 h-10 p-1 text-gray-light ring-1 ring-inset ring-gray-light placeholder:text-gray-dark bg-blue" type="datetime-local" id="scheduleDate"
-            value={scheduleDate} onChange={(e) => setScheduleDate(e.target.value)} />
+            value={scheduleDate} onChange={handleTimeChange} />
           <button className="font-sans bg-blue-dark py-2 px-4 rounded mt-4 text-gray-light" onClick={handleGenerateClick}>Generate</button> 
           <div className="p-px">
           {[gptImageStatus, wpImageStatus, gptContentStatus, wpPostStatus].map((prcs) => (

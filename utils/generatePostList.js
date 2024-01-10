@@ -12,8 +12,6 @@ async function generatePostList(keyword) {
     htmlString += `<li><a href="${post.guid.rendered}">${post.title.rendered}</a></li>`;
   });
   htmlString += '</ul>';
-  console.log('Generating Internal Links!');
-  console.log(htmlString);
   return htmlString;
 }
 

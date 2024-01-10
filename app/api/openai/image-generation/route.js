@@ -7,7 +7,7 @@ const openai = new OpenAI({
 export async function POST(reqs, res) {
 
   const request = await reqs.json();
-  console.log(process.env.OPENAI_KEY);
+  console.log('Generating Image');
 
   try {
     const response = await openai.images.generate({
@@ -19,6 +19,7 @@ export async function POST(reqs, res) {
     });
     const data = await response;
     const base64Image = await data.data[0].b64_json;
+    console.log('Image Generated');    
     return new Response(JSON.stringify({ data: base64Image, ok: true}));  
   } catch (error) {
     console.error('Error fetching posts:', error);
